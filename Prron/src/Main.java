@@ -3,36 +3,53 @@ import java.io.File;
 import processing.core.PApplet;
 import processing.data.XML;
 
-public class Main extends PApplet{
+public class Main extends PApplet {
 	XML figuras;
-	
+	File archivito = new File("../data/bolitas.xml");
+
 	@Override
 	public void setup() {
 		// TODO Auto-generated method stub
-		
-		File archivito = new File("../data/bolitas.xml");
-		
-		
-		
-		System.out.println("Llorela");
+		if (!archivito.exists() && !archivito.isDirectory()) {
+			figuras = crear();
+		} else {
+			figuras = cargar();
+			System.out.println("Llorela");
+		}
 	}
-	
-	private void crear(){
-		figuras = parseXML("<figuras></figuras>");
+
+	private XML crear() {
+		XML temp = null;
+		temp = parseXML("<figuras></figuras>");
 		XML bola = parseXML("<bola></bola>");
 
 		for (int i = 0; i < 5; i++) {
 			bola.setInt("x", (int) random(10, width));
 			bola.setInt("y", (int) random(10, height));
 			bola.setInt("tam", (int) random(5, 20));
-			
-			figuras.addChild(bola);
+
+			temp.addChild(bola);
+
+			saveXML(temp, "../data/bolitas.xml");
 		}
+		return temp;
+	}
+
+	private XML cargar() {
+		XML temp = null;
+		try {
+			temp = new XML(archivito);
+			saveXML(temp, "../data/bolitas.xml");
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return temp;
 	}
 
 	@Override
 	public void draw() {
 		background(255);
+		figuras = cargar();
 		XML[] bolitas = figuras.getChildren("bola");
 		for (int i = 0; i < bolitas.length; i++) {
 			int x = bolitas[i].getInt("x");
@@ -45,6 +62,7 @@ public class Main extends PApplet{
 	}
 
 	public void mousePressed() {
+		figuras = cargar();
 		XML[] bolitas = figuras.getChildren("bola");
 		XML bolitaEncontrada = null;
 		for (int i = 0; i < bolitas.length && bolitaEncontrada == null; i++) {
