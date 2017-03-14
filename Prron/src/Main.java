@@ -39,7 +39,7 @@ public class Main extends PApplet {
 		XML temp = null;
 		try {
 			temp = new XML(archivito);
-			saveXML(temp, "../data/bolitas.xml");
+			// saveXML(temp, "../data/bolitas.xml");
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
@@ -49,7 +49,6 @@ public class Main extends PApplet {
 	@Override
 	public void draw() {
 		background(255);
-		figuras = cargar();
 		XML[] bolitas = figuras.getChildren("bola");
 		for (int i = 0; i < bolitas.length; i++) {
 			int x = bolitas[i].getInt("x");
@@ -62,9 +61,10 @@ public class Main extends PApplet {
 	}
 
 	public void mousePressed() {
-		figuras = cargar();
+		System.out.println("PERRO");
 		XML[] bolitas = figuras.getChildren("bola");
 		XML bolitaEncontrada = null;
+
 		for (int i = 0; i < bolitas.length && bolitaEncontrada == null; i++) {
 			int x = bolitas[i].getInt("x");
 			int y = bolitas[i].getInt("y");
@@ -73,6 +73,7 @@ public class Main extends PApplet {
 			if (dist(x, y, mouseX, mouseY) < tam / 2) {
 				bolitaEncontrada = bolitas[i];
 			}
+
 		}
 
 		if (bolitaEncontrada != null) {
